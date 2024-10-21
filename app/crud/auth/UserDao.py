@@ -23,8 +23,8 @@ class UserDao:
             async with async_session() as session:
                 async with session.begin():
                     existing_user = await session.execute(
-                        select(User).where(User.username == username)).scalars().first()
-                    if existing_user:
+                        select(User).where(User.username == username))
+                    if existing_user.scalars().first():
                         raise Exception("用户名或邮箱已存在")
                     pwd = UserToken.add_salt(password)
                     user = User(username, pwd)
@@ -44,7 +44,8 @@ class UserDao:
             async with async_session() as session:
                 async with session.begin():
                     user = await session.execute(
-                        select(User).where(User.username == username).where(User.password == pwd)).scalars().first()
+                        select(User).where(User.username == username).where(User.password == pwd))
+                    user = user.scalars().first()
                     if user is None:
                         raise Exception("用户名或密码错误")
                     user.last_login_at = datetime.now()

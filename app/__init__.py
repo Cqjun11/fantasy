@@ -6,8 +6,15 @@ from fastapi import FastAPI
 from loguru import logger
 from loguru._defaults import LOGURU_FORMAT
 import logging
+from app.models import create_tables
 
 fantasy = FastAPI(debug=True)
+
+
+@fantasy.on_event("startup")
+async def startup():
+    await create_tables()
+
 
 # 配置日志格式
 INFO_FORMAT = "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> " \

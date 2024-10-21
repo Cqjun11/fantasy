@@ -8,7 +8,7 @@ class User(Base):
     __tablename__ = 'user'
     id = Column(Integer, primary_key=True)
     username = Column(String(12), unique=True)
-    password = Column(String(20), nullable=False)
+    password = Column(String(50), nullable=False)
     # phone = Column(String(12), unique=True)
     created_at = Column(TIMESTAMP, nullable=False, default=datetime.now())
     updated_at = Column(TIMESTAMP, nullable=False, default=datetime.now())
@@ -21,5 +21,3 @@ class User(Base):
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
 
-
-# Base.metadata.create_all(engine)
