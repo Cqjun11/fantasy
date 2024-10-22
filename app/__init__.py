@@ -8,22 +8,22 @@ from loguru._defaults import LOGURU_FORMAT
 import logging
 from app.models import create_tables
 
-fantasy = FastAPI(debug=True)
+fantasy = FastAPI()
 
 
-@fantasy.on_event("startup")
-async def startup():
-    await create_tables()
+# @fantasy.on_event("startup")
+# async def startup():
+#     await create_tables()
 
 
 # 配置日志格式
 INFO_FORMAT = "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> " \
-              "| <level>{level: <8}</level> | <cyan>文件: {extra[filename]}</cyan> " \
+              "| <level>{level: <8}</level> | <cyan>文件: {extra[file]}</cyan> " \
               "| 模块: <cyan>{extra[business]}</cyan> | 方法: <cyan>{extra[func]}</cyan> " \
               "| <cyan>行数: {extra[line]}</cyan> | - <level>{message}</level>"
 
 ERROR_FORMAT = "<red>{time:YYYY-MM-DD HH:mm:ss.SSS}</red> " \
-               "| <level>{level: <8}</level> | <cyan>文件: {extra[filename]}</cyan> " \
+               "| <level>{level: <8}</level> | <cyan>文件: {extra[file]}</cyan> " \
                "| 模块: <cyan>{extra[business]}</cyan> | 方法: <cyan>{extra[func]}</cyan> " \
                "| <cyan>行数: {extra[line]}</cyan> | - <level>{message}</level>"
 
@@ -89,6 +89,7 @@ def init_logging():
     for corn_logger in loggers:
         corn_logger.handlers = []
 
+    logger.remove()
     intercept_handler = InterceptHandler()
     logging.getLogger("uvicorn").handlers = [intercept_handler]
     # 添加一个info log文件，主要记录debug和info级别的日志
@@ -98,19 +99,20 @@ def init_logging():
     logger.add(log_info, enqueue=True, rotation="20 Mb", level="DEBUG", filter=make_filter(BaseConfig.LOG_INFO))
     logger.add(log_error, enqueue=True, rotation="20 Mb", level="WARNING", filter=make_filter(BaseConfig.LOG_ERROR))
 
-    # 配置loguru的日志句柄，sink代表输出的目标
-    logger.configure(
-        handlers=[
-            {"sink": sys.stdout, "level": logging.DEBUG, "format": format_record},
-            {"sink": log_info, "level": logging.INFO, "format": INFO_FORMAT,
-             "filter": make_filter(BaseConfig.LOG_INFO)},
-            {"sink": log_error, "level": logging.WARNING, "format": ERROR_FORMAT,
-             "filter": make_filter(BaseConfig.LOG_ERROR)}
-        ]
-    )
+    # # 配置loguru的日志句柄，sink代表输出的目标
+    logger.add(sys.stdout, level=logging.DEBUG, format=format_record)
+    # logger.configure(
+    #     handlers=[
+    #         {"sink": sys.stdout, "level": logging.DEBUG, "format": format_record},
+    #         {"sink": log_info, "level": logging.INFO, "format": INFO_FORMAT,
+    #          "filter": make_filter(BaseConfig.LOG_INFO)},
+    #         {"sink": log_error, "level": logging.WARNING, "format": ERROR_FORMAT,
+    #          "filter": make_filter(BaseConfig.LOG_ERROR)}
+    #     ]
+    # )
     return logger
 
 
 log = init_logging()
 
-# log.bind(name='log_info').info("初始化日志配置")
+# log.bind(name='log_error').error("初始化日志配置")

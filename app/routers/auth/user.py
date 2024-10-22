@@ -14,7 +14,7 @@ async def login(data: UserDto):
         user = await UserDao.login(data.username, data.password)
         user = FantasyResponse.model_to_dict(user, "password")
         end_time, token = UserToken.get_token(user)
-        print(end_time, token)
+
         return FantasyResponse.success(dict(token=token, user=user, end_time=end_time), msg="登录成功")
     except Exception as e:
         return FantasyResponse.failed(e)
@@ -26,7 +26,6 @@ async def register(data: UserDto):
         user = await UserDao.register_user(data.username, data.password)
         user = FantasyResponse.model_to_dict(user, "password")
         end_time, token = UserToken.get_token(user)
-        print(end_time, token)
         return FantasyResponse.success(dict(token=token, user=user, end_time=end_time), msg="注册成功")
     except Exception as e:
         return FantasyResponse.failed(e)

@@ -30,6 +30,7 @@ class BaseConfig(BaseSettings):
     # 异步URI
     ASYNC_SQLALCHEMY_URI: ClassVar[str] = 'mysql+aiomysql://root:123456@localhost:3306/fantasy'
 
+
 mysql = 'mysql+pymysql://{}:{}@:{}:{}'.format(BaseConfig.MYSQL_USER, BaseConfig.MYSQL_PWD,
                                                                  BaseConfig.MYSQL_HOST, BaseConfig.MYSQL_PORT)
 # print(mysql)

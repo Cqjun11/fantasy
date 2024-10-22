@@ -21,3 +21,4 @@ class User(Base):
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
 
+
