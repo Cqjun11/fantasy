@@ -11,9 +11,9 @@ from app.models import create_tables
 fantasy = FastAPI()
 
 
-# @fantasy.on_event("startup")
-# async def startup():
-#     await create_tables()
+@fantasy.on_event("startup")
+async def startup():
+    await create_tables()
 
 
 # 配置日志格式

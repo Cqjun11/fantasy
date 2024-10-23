@@ -1,9 +1,11 @@
+import asyncio
 import json
 import time
 import aiohttp
 from aiohttp import FormData
 from config import BaseConfig
 from app.enums.RequestBodyEnum import BodyType
+from app.middleware.Jwt import UserToken
 
 
 class AsyncHttpClient(object):
@@ -43,14 +45,18 @@ class AsyncHttpClient(object):
         if not url.startswith(("http://", "https://")):
             raise Exception("请输入正确的url, 记得带上http哦")
         headers = kwargs.get("headers", {})
+        # if 'token' not in headers:
+        #     raise Exception("登录授权失效")
+        # # UserToken.parse_token(headers['token'])
         if body_type == BodyType.json:
             if "Content-Type" not in headers:
                 headers['Content-Type'] = "application/json; charset=UTF-8"
             # 新增json校验，修复史诗级bug: json被额外序列化
             try:
                 body = kwargs.get("body")
-                if body:
-                    body = json.loads(body)
+                if isinstance(body, dict):
+                    body = json.dumps(body)
+                body = json.loads(body)
             except Exception as e:
                 raise Exception(f"json格式不正确: {e}")
             r = AsyncHttpClient(url, headers=headers, timeout=timeout,
@@ -75,8 +81,9 @@ class AsyncHttpClient(object):
             except Exception as e:
                 raise Exception(f"解析form-data失败: {str(e)}")
         elif body_type == BodyType.x_form:
+            headers['Content-Type'] = "application/x-www-form-urlencoded"
             body = kwargs.get("body", "{}")
-            body = json.loads(body)
+            # body = json.loads(body)
             r = AsyncHttpClient(url, headers=headers, data=body, timeout=timeout)
         else:
             # 暂时未支持其他类型
@@ -89,7 +96,7 @@ class AsyncHttpClient(object):
             data = await resp.text()
             data = json.loads(data)
             # 说明是json格式
-            # return json.dumps(data, ensure_ascii=False, indent=4), True
+            return json.dumps(data, ensure_ascii=False, indent=4), True
         except:
             data = await resp.text()
             # 说明不是json格式，我们不做loads操作了
@@ -108,7 +115,7 @@ class AsyncHttpClient(object):
 
     @staticmethod
     async def collect(status, request_data, status_code=200, response=None, response_headers=None,
-                request_headers=None, cookies=None, elapsed_time=None, msg="success", **kwargs):
+                      request_headers=None, cookies=None, elapsed_time=None, msg="success", **kwargs):
         """
        收集http返回数据
        :param status: 请求状态

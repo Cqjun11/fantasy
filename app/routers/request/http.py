@@ -16,5 +16,4 @@ async def request_http(data: HttpRequestForm):
             return FantasyResponse.success(response)
         return FantasyResponse.failed(response.get("msg"), data=response)
     except Exception as e:
-        print(e)
         return FantasyResponse.failed(e)

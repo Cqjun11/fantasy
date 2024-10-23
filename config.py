@@ -1,7 +1,7 @@
 # 基础配置类
 from typing import ClassVar
-
 from pydantic_settings import BaseSettings
+# from pydantic import BaseSettings
 import os
 
 # 获取项目根目录

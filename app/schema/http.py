@@ -1,12 +1,12 @@
 from pydantic import BaseModel, field_validator
-
+from typing import Union
 from app.enums.RequestBodyEnum import BodyType
 
 
 class HttpRequestForm(BaseModel):
     method: str
     url: str
-    body: str = None
+    body: Union[str, dict, list] = None
     headers: dict = {}
     body_type: BodyType = BodyType.none
 
