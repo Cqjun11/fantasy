@@ -1,4 +1,5 @@
-from sqlalchemy import create_engine, sql
+from datetime import datetime
+from sqlalchemy import create_engine, sql, Column, TIMESTAMP, Integer
 from asyncio import current_task
 from sqlalchemy.ext.asyncio import create_async_engine, async_scoped_session, AsyncSession
 from sqlalchemy.orm import sessionmaker
@@ -45,3 +46,18 @@ Base = declarative_base()
 async def create_tables():
     async with async_engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+
+
+class BaseModel:
+    create_time = Column(TIMESTAMP, default=datetime.now())
+    update_time = Column(TIMESTAMP, default=datetime.now())
+    is_del = Column(Integer, default=1)
+
+    class Mate:
+        abstract = True
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.create_time = datetime.now()
+        self.update_time = datetime.now()
+        self.is_del = 1
