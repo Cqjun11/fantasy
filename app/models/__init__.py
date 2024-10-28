@@ -48,16 +48,3 @@ async def create_tables():
         await conn.run_sync(Base.metadata.create_all)
 
 
-class BaseModel:
-    create_time = Column(TIMESTAMP, default=datetime.now())
-    update_time = Column(TIMESTAMP, default=datetime.now())
-    is_del = Column(Integer, default=1)
-
-    class Mate:
-        abstract = True
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.create_time = datetime.now()
-        self.update_time = datetime.now()
-        self.is_del = 1

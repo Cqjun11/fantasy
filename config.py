@@ -25,10 +25,15 @@ class BaseConfig(BaseSettings):
     MYSQL_PORT: ClassVar[int] = 3306
     MYSQL_USER: ClassVar[str] = "root"
     MYSQL_PWD: ClassVar[str] = '123456'
-    DBNAME: ClassVar[str] = ""
+    DBNAME: ClassVar[str] = "fantasy"
 
     # 异步URI
     ASYNC_SQLALCHEMY_URI: ClassVar[str] = 'mysql+aiomysql://root:123456@localhost:3306/fantasy'
+
+    # 权限 0 普通用户 1 组长 2 管理员
+    MEMBER: ClassVar[int] = 0
+    MANAGER: ClassVar[int] = 1
+    ADMIN: ClassVar[int] = 2
 
 
 mysql = 'mysql+pymysql://{}:{}@:{}:{}'.format(BaseConfig.MYSQL_USER, BaseConfig.MYSQL_PWD,
