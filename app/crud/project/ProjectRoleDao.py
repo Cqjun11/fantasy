@@ -1,5 +1,5 @@
 from app.models import async_session
-from sqlalchemy import Select
+from sqlalchemy import Select, select
 from app.models.project_role import ProjectRole
 from app.models.project import Project
 
@@ -17,3 +17,15 @@ class ProjectRoleDao:
                 return data.scalars().all()
         except Exception as e:
             raise Exception("获取项目列表失败", e)
+
+    @staticmethod
+    async def list_role(project_id: int) -> list[ProjectRole]:
+        try:
+            async with async_session() as session:
+                query = await session.execute(
+                    select(ProjectRole).where(ProjectRole.project_id == project_id, ProjectRole.deleted_at == 0))
+                return query.scalars().all()
+        except Exception as e:
+            raise Exception(f"获取项目角色列表失败")
+
+

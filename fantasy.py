@@ -2,9 +2,11 @@ import uvicorn
 from app import fantasy
 from app.routers.auth import user
 from app.routers.request import http
+from app.routers.project import project
 from config import BaseConfig
 fantasy.include_router(user.router)
 fantasy.include_router(http.router)
+fantasy.include_router(project.router)
 
 if __name__ == "__main__":
     # config = BaseConfig()

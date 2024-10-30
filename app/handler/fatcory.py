@@ -1,6 +1,7 @@
 from datetime import datetime
 from app.handler.encoder import jsonable_encoder
 
+
 class FantasyResponse:
 
     @staticmethod
@@ -52,3 +53,9 @@ class FantasyResponse:
     @staticmethod
     def failed(msg, code=110, data=None):
         return dict(code=code, msg=str(msg), data=data)
+
+    @staticmethod
+    def success_with_size(data=None, code=0, msg="操作成功", total=0):
+        if data is None:
+            return FantasyResponse.encode_json(dict(code=code, msg=msg, data=list(), total=0))
+        return FantasyResponse.encode_json(dict(code=code, msg=msg, data=data, total=total))

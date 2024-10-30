@@ -16,8 +16,8 @@ class BaseModel(Base):
     __fields__: Tuple[Column] = [id]
 
     def __init__(self, user):
-        self.created_at = datetime.now()
-        self.updated_at = datetime.now()
+        self.create_time = datetime.now()
+        self.update_time = datetime.now()
         self.create_user = user
         self.update_user = user
         self.deleted_at = 0
